@@ -1,0 +1,249 @@
+<html>
+ <head>
+ <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+<meta http-equiv="Access-Control-Allow-Headers" content="X-Requested-With" />
+ <style>
+ .cbox {
+  border:1px solid gray;
+  width:100% !important;
+  height:100% !important;
+ }
+ 
+ .cbox3:before {
+  content:" ";
+ }
+
+ .cbox3 {
+  border:0px solid white;
+  margin:1px;
+ }
+
+ .cbox3:hover {
+  border:2px solid black;
+  margin:0px;
+ }
+ 
+ .tbox {
+  margin:1px;
+  display:inline-block;
+  width:1.5em !important;
+  height:1.5em !important;
+  background-image: url("bg.png");
+ }
+ 
+ .cbox2 {
+  margin:1px;
+  display:inline-block;
+  width:1.5em !important;
+  height:1.5em !important;
+  background-image: url("bg.png");
+  animation:myship 10s;
+  -moz-animation:myship 10s;
+  -webkit-animation:myship 10s;
+  animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+ }
+ 
+ #status {
+  display:inline-block;
+ }
+ 
+ td {
+  align:left;
+  text-align:left;
+  vertical-align:top;
+ }
+ 
+ #canvas {
+  cursor: crosshair;
+  border:1px solid gray;
+  background-image:url("bg.png");
+  animation:myship 10s;
+  -moz-animation:myship 10s;
+  -webkit-animation:myship 10s;
+  animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -webkit-animation-timing-function: linear;
+ }
+   @keyframes myship {
+    0% {background-position: 0px 15px;}
+    10% {background-position: 8.81px 12.13px;}
+    20% {background-position: 14.26px 4.63px;}
+    30% {background-position: 14.26px -4.63px;}
+    40% {background-position: 8.81px -12.13px;}
+    50% {background-position: 0px -15px;}
+    60% {background-position: -8.81px -12.13px;}
+    70% {background-position: -14.26px -4.63px;}
+    80% {background-position: -14.26px 4.63px;}
+    90% {background-position: -8.81px 12.13px;}
+    100% {background-position: 0px 15px;}
+   }
+   @-moz-keyframes myship {
+    0% {background-position: 0px 15px;}
+    10% {background-position: 8.81px 12.13px;}
+    20% {background-position: 14.26px 4.63px;}
+    30% {background-position: 14.26px -4.63px;}
+    40% {background-position: 8.81px -12.13px;}
+    50% {background-position: 0px -15px;}
+    60% {background-position: -8.81px -12.13px;}
+    70% {background-position: -14.26px -4.63px;}
+    80% {background-position: -14.26px 4.63px;}
+    90% {background-position: -8.81px 12.13px;}
+    100% {background-position: 0px 15px;}
+   }
+   @-webkit-keyframes myship {
+    0% {background-position: 0px 15px;}
+    10% {background-position: 8.81px 12.13px;}
+    20% {background-position: 14.26px 4.63px;}
+    30% {background-position: 14.26px -4.63px;}
+    40% {background-position: 8.81px -12.13px;}
+    50% {background-position: 0px -15px;}
+    60% {background-position: -8.81px -12.13px;}
+    70% {background-position: -14.26px -4.63px;}
+    80% {background-position: -14.26px 4.63px;}
+    90% {background-position: -8.81px 12.13px;}
+    100% {background-position: 0px 15px;}
+   }
+ </style>
+ <script src="Paint.js"></script>
+ </head>
+ <body onload="setup();">
+  <table style="width:100%;height:100;">
+   <tr><td valign="top"><canvas id="canvas" width="600" height="400" style="width:600px;height:400px;"></canvas></td>
+   <td valign="top">
+    <div class="cbox2"><div class="cbox" id="maincolor"></div></div>
+	<div class="cbox2"><div class="cbox" id="maincolor2"></div></div>
+    <div style="display:inline-block;" id="palette"></div>
+   </td></tr>
+   <tr><td valign="top">
+    
+   </td></tr>
+   <tr><td valign="top">
+    <div class="cbox2"><div class="cbox" id="currcolor"></div></div>
+    <div id="status"></div>
+   </td></tr>
+  </table>
+  <script>
+
+var color;
+var Colorpalette = [
+ "#000000","#FFFFFF",
+ "#FF0000","#00FF00","#0000FF",
+ "#FFFF00","#FF00FF","#00FFFF",
+ "#800000","#008000","#000080",
+ "#808000","#800080","#008080",
+ "#00000000","#00000080",
+ "#FFFFFF00","#FFFFFF80",
+ "#787878","#790300","#757A01","#007902","#007778","#0A0078","#7B0077","#767A38","#003637","#286FFE","#083178","#4C00FE","#783B00",
+ "#BBBBBB","#3400FE","#FF00FE","#FBFF7A","#00FF7B","#76FEFF","#8270FE","#FF0677","#FF7D36",
+];
+
+var ToolBoxes = [
+ {
+  F:function() {Paint.Pencil.Type = "FILL"},
+  K:[]
+ },
+];
+
+function setup() {
+ Paint.setCanvas(document.all.canvas);
+ Paint.canvas.addEventListener('mousemove', getInfo);
+ Paint.canvas.addEventListener('mousedown',function(event) {Paint.Pencil.Start(event.layerX,event.layerY);});
+ Paint.canvas.addEventListener('mouseup',function(event) {Paint.Pencil.Stop(event.layerX,event.layerY);});
+ for (var i=0;i<Colorpalette.length;i++) {
+  var color = new Color(Colorpalette[i]);
+  Colorpalette[i] = color;
+  var div1 = newElement(document.all.palette,"DIV");
+  div1.className = "cbox2";
+  var div2 = newElement(div1,"DIV");
+  div2.className = "cbox cbox3";
+  div2.style.backgroundColor = "" + color + "";
+  div2.style.borderColor = "" + color + "";
+  div1.onclick = new Function("Paint.color = new Color(\""+color+"\");");
+ }
+ Paint.paintCanvas(0,0,100,100,"blue");
+ Paint.paintCanvas(30,30,100,100,"red");
+ Paint.paintCanvas(60,60,100,100,"#00FF00");
+ Paint.paintCanvas(90,90,100,100,"#00000080");
+};
+
+function NoisyCanvas(r,g,b,a) {
+ var wi = Paint.canvas.width;
+ var he = Paint.canvas.height;
+ var imageData = Paint.ctx.getImageData(0,0,wi,he);
+ for (var x=0;x<wi;x++) {
+  for (var y=0;y<he;y++) {
+   if (r) imageData.data[(y*wi + x)*4] = Math.floor(255*Math.random());
+   if (g) imageData.data[(y*wi + x)*4+1] = Math.floor(255*Math.random());
+   if (b) imageData.data[(y*wi + x)*4+2] = Math.floor(255*Math.random());
+   if (a) imageData.data[(y*wi + x)*4+3] = Math.floor(255*Math.random());
+   else imageData.data[(y*wi + x)*4+3] = 255;
+  }
+ }
+ Paint.ctx.putImageData(imageData,0,0);
+}
+
+function Resize(w,h) {
+ Paint.resizeCanvas(w,h);
+}
+
+function FileSave(filename = 'unnamed.png') {
+ var a = newElement(document.body,"a")
+ a.href = Paint.getImageData();
+ a.download = filename;
+ a.click();
+ document.body.removeChild(a);
+}
+
+function newElement(doc,tag) {
+ var ele = document.createElement(tag);
+ doc.appendChild(ele);
+ return ele;
+}
+
+function mouseButton(e) {
+    var isMB = {};
+    e = e || window.event;
+    if ("which" in e)  // Gecko (Firefox), WebKit (Safari/Chrome) & Opera
+        isMB.w = e.which;
+    else if ("button" in e)  // IE, Opera 
+        isMB.b = e.button;
+    return isMB;
+}
+
+function getInfo(event) {
+  var x = event.layerX;
+  var y = event.layerY;
+  window.mb = mouseButton(event);
+  if (mb.w == 1 || mb.b == 0) {
+   Paint.Pencil.Move(x,y);
+  }
+  var col = Paint.getPixelColor(x,y);
+  document.all.currcolor.style.backgroundColor = "" + col + "";
+  document.all.currcolor.style.border = "1px solid " + col.getReverse();
+  document.all.status.innerText = "["+x+","+y+"] " + col;
+  
+  document.all.maincolor.style.backgroundColor = "" + Paint.color + "";
+  document.all.maincolor.style.border = "1px solid " + Paint.color.getReverse();
+  
+  document.all.maincolor2.style.backgroundColor = "" + Paint.Pencil._ir + "";
+  document.all.maincolor2.style.border = "1px solid " + Paint.Pencil._ir.getReverse();
+}
+
+function toggleSmoothing(chk) {
+ Paint.ctx.imageSmoothingEnabled = chk;
+ Paint.ctx.mozImageSmoothingEnabled = chk;
+ Paint.ctx.webkitImageSmoothingEnabled = chk;
+ Paint.ctx.msImageSmoothingEnabled = chk;
+}
+
+  </script>
+ </body>
+</html>
